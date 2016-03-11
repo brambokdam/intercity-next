@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160112144254) do
+ActiveRecord::Schema.define(version: 20160122134640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,17 @@ ActiveRecord::Schema.define(version: 20160112144254) do
   add_index "linked_services", ["app_id"], name: "index_linked_services_on_app_id", using: :btree
   add_index "linked_services", ["service_id"], name: "index_linked_services_on_service_id", using: :btree
 
+  create_table "server_load_histories", force: :cascade do |t|
+    t.integer  "server_id"
+    t.decimal  "cpu"
+    t.decimal  "memory"
+    t.decimal  "disk"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "server_load_histories", ["server_id"], name: "index_server_load_histories_on_server_id", using: :btree
+
   create_table "servers", force: :cascade do |t|
     t.string   "name"
     t.string   "ip"
@@ -104,11 +115,10 @@ ActiveRecord::Schema.define(version: 20160112144254) do
 
   create_table "services", force: :cascade do |t|
     t.string   "name"
-    t.boolean  "active",          default: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.boolean  "active",     default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.json     "commands"
-    t.boolean  "install_default", default: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -133,4 +143,5 @@ ActiveRecord::Schema.define(version: 20160112144254) do
   add_foreign_key "env_vars", "apps"
   add_foreign_key "linked_services", "apps"
   add_foreign_key "linked_services", "services"
+  add_foreign_key "server_load_histories", "servers"
 end
